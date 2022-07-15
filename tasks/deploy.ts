@@ -1,10 +1,9 @@
-import "@nomiclabs/hardhat-waffle";
 import { task } from "hardhat/config";
-import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { writeFileSync } from "fs";
+import "@nomiclabs/hardhat-waffle";
 
 task("deploy", "Deploy Greeter contract").setAction(
-  async (_, hre: HardhatRuntimeEnvironment): Promise<void> => {
+  async (_, hre): Promise<void> => {
     /* these two lines deploy the contract to the network */
     const Blog = await hre.ethers.getContractFactory("Blog");
     const blog = await Blog.deploy("My blog");

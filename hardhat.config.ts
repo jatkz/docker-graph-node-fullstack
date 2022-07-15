@@ -6,7 +6,8 @@ import "@nomiclabs/hardhat-waffle";
 import "@typechain/hardhat";
 import "hardhat-gas-reporter";
 import "solidity-coverage";
-import "./tasks/deploy";
+
+import "./tasks/sample-trade";
 
 dotenv.config();
 
@@ -30,7 +31,8 @@ const config: HardhatUserConfig = {
   networks: {
     hardhat: {},
     mumbai: {
-      url: "https://rpc-mumbai.maticvigil.com",
+      url:
+        process.env.MUMBAI_ALCHEMY_URL || "https://rpc-mumbai.maticvigil.com",
       accounts: [process.env.MUMBAI_PRIVATE_KEY],
     },
     rinkeby: {

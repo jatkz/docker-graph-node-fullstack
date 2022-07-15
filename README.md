@@ -1,3 +1,27 @@
+# Setting up the Project
+
+```
+npx hardhat node --hostname 0.0.0.0
+
+# Inside the graph node project EX:
+# create graph node directory example project template
+graph init --from-example jaredtokuz/bondingcurve ./subgraph
+cd subgraph
+# run local graph node
+docker-compose up
+
+# Deploy the smart contract
+npx hardhat run --network localhost ./scripts/deploy-bc.ts
+# install subgraph deps
+graph codegen
+
+# Fix the docker compose image versions
+# graph-node and ipfs based on graph-node github docker directory
+
+```
+
+# TODO
+
 # Advanced Sample Hardhat Project
 
 This project demonstrates an advanced Hardhat use case, integrating other tools commonly used alongside Hardhat in the ecosystem.
