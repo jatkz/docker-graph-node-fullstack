@@ -17,7 +17,7 @@ task("sample-trades", "Run some sample trades").setAction(
     )
       .buy({
         // value: hre.ethers.utils.parseEther("2"),
-        value: 20000,
+        value: 200,
         // gasPrice: 1000000000,
         gasLimit: 300000,
       })

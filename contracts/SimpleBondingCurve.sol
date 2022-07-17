@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "./BancorFormula.sol";
+import "./SimpleCurveFormula.sol";
 import "hardhat/console.sol";
 
 /**
@@ -14,29 +14,17 @@ import "hardhat/console.sol";
  * https://github.com/ConsenSys/curationmarkets/blob/master/CurationMarkets.sol
  * uses bancor formula
  */
-contract BondingCurveUniversal is ERC20, BancorFormula, Ownable {
+contract SimpleBondingCurve is ERC20, SimpleCurveFormula, Ownable {
     uint256 public poolBalance;
 
     constructor() ERC20("BondingCurve", "BC") {}
-
-    /*
-    reserve ratio, represented in ppm, 1-1000000
-    1/3 corresponds to y= multiple * x^2
-    1/2 corresponds to y= multiple * x
-    2/3 corresponds to y= multiple * x^1/2
-    multiple will depends on contract initialization,
-    specificallytotalAmount and poolBalance parameters
-    we might want to add an 'initialize' function that will allow
-    the owner to send ether to the contract and mint a given amount of tokens
-  */
-    uint32 reserveRatio = uint32(1000000) / uint32(3);
 
     /*
     - Front-running attacks are currently mitigated by the following mechanisms:
     TODO - minimum return argument for each conversion provides a way to define a minimum/maximum price for the transaction
     - gas price limit prevents users from having control over the order of execution
   */
-    uint256 public gasPrice = 3000000000 wei; // maximum gas price for bancor transactions
+    uint256 public gasPrice = 1000000000 wei; // maximum gas price for bancor transactions
 
     /**
      * @dev receive function
@@ -59,19 +47,18 @@ contract BondingCurveUniversal is ERC20, BancorFormula, Ownable {
      * @return {bool}
      */
     function buy() public payable validGasPrice returns (bool) {
-        console.log("buy started");
         require(msg.value > 0, "value cannot be zero");
-        console.log("passed req");
-        uint256 tokensToMint = calculatePurchaseReturn(
-            totalSupply(),
-            poolBalance,
-            reserveRatio,
-            msg.value
-        );
-        console.log("passed calc");
+
+        uint256 tokensToMint;
+        uint256 cost;
+        (tokensToMint, cost) = calculateBuyReturn(totalSupply(), msg.value);
+
         _mint(msg.sender, tokensToMint);
-        console.log("passed mint");
-        poolBalance = poolBalance + msg.value;
+
+        poolBalance = poolBalance + cost;
+        uint256 change = msg.value - cost;
+        // send back any change
+        payable(msg.sender).transfer(change);
         emit LogMint(tokensToMint, msg.value);
         return true;
     }
@@ -83,15 +70,13 @@ contract BondingCurveUniversal is ERC20, BancorFormula, Ownable {
      * @return {bool}
      */
     function sell(uint256 sellAmount) public validGasPrice returns (bool) {
-        require(sellAmount > 0 && balanceOf(msg.sender) >= sellAmount);
-        uint256 ethAmount = calculateSaleReturn(
-            totalSupply(),
-            poolBalance,
-            reserveRatio,
-            sellAmount
+        require(
+            sellAmount > 0 && balanceOf(msg.sender) >= sellAmount,
+            "Seller does not have this amount."
         );
-        payable(msg.sender).transfer(ethAmount);
+        uint256 ethAmount = calculateSaleReturn(totalSupply(), sellAmount);
         poolBalance = poolBalance - ethAmount;
+        payable(msg.sender).transfer(ethAmount);
         _burn(msg.sender, ethAmount);
         emit LogWithdraw(sellAmount, ethAmount);
         return true;

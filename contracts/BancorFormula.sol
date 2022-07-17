@@ -1,6 +1,7 @@
 pragma solidity ^0.8.0;
 import "./Utils.sol";
 import "./interfaces/IBancorFormula.sol";
+import "hardhat/console.sol";
 
 /**
  * bancor formula by bancor
@@ -188,10 +189,9 @@ contract BancorFormula is IBancorFormula, Utils {
     ) public view override returns (uint256) {
         // validate input
         require(
-            _supply > 0 &&
-                _connectorBalance > 0 &&
-                _connectorWeight > 0 &&
-                _connectorWeight <= MAX_WEIGHT
+            // _supply > 0 &&
+            //     _connectorBalance > 0 &&
+            _connectorWeight > 0 && _connectorWeight <= MAX_WEIGHT
         );
 
         // special case for 0 deposit amount
@@ -203,15 +203,30 @@ contract BancorFormula is IBancorFormula, Utils {
 
         uint256 result;
         uint8 precision;
-        uint256 baseN = (_depositAmount * _connectorBalance);
-        (result, precision) = power(
-            baseN,
-            _connectorBalance,
-            _connectorWeight,
-            MAX_WEIGHT
-        );
-        uint256 temp = (_supply * result) >> precision;
-        return temp - _supply;
+        if (_supply == 0 || _connectorBalance == 0) {
+            uint256 multiple = 160;
+            uint256 baseN = _depositAmount * multiple;
+            (result, precision) = power(
+                baseN,
+                multiple,
+                _connectorWeight,
+                MAX_WEIGHT
+            );
+            console.log("power func");
+            console.log(result);
+            console.log(precision);
+            return result;
+        } else {
+            uint256 baseN = (_depositAmount * _connectorBalance);
+            (result, precision) = power(
+                baseN,
+                _connectorBalance,
+                _connectorWeight,
+                MAX_WEIGHT
+            );
+            uint256 temp = (_supply * result) >> precision;
+            return temp - _supply;
+        }
     }
 
     /**
