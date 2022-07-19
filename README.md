@@ -22,6 +22,10 @@ graph codegen
 
 # TODO
 
+1. Test new logic in remix ide
+2. Write Tests for all 4 curve formula functions & the 2 simple bonding curve
+3. Write the sample-trade function to make a bunch of trade 20 buys 14 sells
+
 # Advanced Sample Hardhat Project
 
 This project demonstrates an advanced Hardhat use case, integrating other tools commonly used alongside Hardhat in the ecosystem.

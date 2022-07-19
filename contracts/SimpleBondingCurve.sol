@@ -77,7 +77,7 @@ contract SimpleBondingCurve is ERC20, SimpleCurveFormula, Ownable {
         uint256 ethAmount = calculateSaleReturn(totalSupply(), sellAmount);
         poolBalance = poolBalance - ethAmount;
         payable(msg.sender).transfer(ethAmount);
-        _burn(msg.sender, ethAmount);
+        _burn(msg.sender, sellAmount);
         emit LogWithdraw(sellAmount, ethAmount);
         return true;
     }

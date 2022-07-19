@@ -31,8 +31,8 @@ contract SimpleCurveFormula is ISimpleCurveFormula, Utils {
         override
         returns (uint256, uint256)
     {
-        uint256 constants = (_supply * _supply) + (_value * 2);
-        uint256 newSupply = sqrt(constants);
+        uint256 consts = (_supply * _supply) + (_value * 2);
+        uint256 newSupply = sqrt(consts);
         uint256 newTokens = newSupply - _supply;
         uint256 cost = calculateBuyCost(_supply, newTokens);
         return (newTokens, cost);
@@ -58,8 +58,8 @@ contract SimpleCurveFormula is ISimpleCurveFormula, Utils {
     {
         uint256 midpoint = (_supply * 2) - _amount;
         if (midpoint < 2) return 1;
-        midpoint = (midpoint + 1) / 2;
-        uint256 reward = midpoint * _amount;
+        midpoint = (midpoint * 10) / 2;
+        uint256 reward = (midpoint * _amount) / 10;
         return reward;
     }
 
@@ -80,10 +80,10 @@ contract SimpleCurveFormula is ISimpleCurveFormula, Utils {
         override
         returns (uint256)
     {
-        uint256 midpoint = (_amount + (_supply * 2));
+        uint256 midpoint = _amount + (_supply * 2);
         if (midpoint < 2) return 1;
-        midpoint = (midpoint + 1) / 2;
-        uint256 cost = midpoint * _amount;
+        midpoint = (midpoint * 10) / 2;
+        uint256 cost = (midpoint * _amount) / 10;
         return cost;
     }
 
