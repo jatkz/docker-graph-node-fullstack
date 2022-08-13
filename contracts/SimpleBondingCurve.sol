@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 import "./SimpleCurveFormula.sol";
 import "hardhat/console.sol";
 
@@ -24,7 +25,7 @@ contract SimpleBondingCurve is ERC20, SimpleCurveFormula, Ownable {
     TODO - minimum return argument for each conversion provides a way to define a minimum/maximum price for the transaction
     - gas price limit prevents users from having control over the order of execution
   */
-    uint256 public gasPrice = 1000000000 wei; // maximum gas price for bancor transactions
+    uint256 public gasPrice = 800000000 wei; // maximum gas price for bancor transactions
 
     /**
      * @dev receive function
@@ -84,7 +85,15 @@ contract SimpleBondingCurve is ERC20, SimpleCurveFormula, Ownable {
 
     // verifies that the gas price is lower than the universal limit
     modifier validGasPrice() {
-        require(tx.gasprice <= gasPrice, "gas price req failed");
+        require(
+            tx.gasprice <= gasPrice,
+            string(
+                bytes.concat(
+                    bytes(Strings.toString(tx.gasprice)),
+                    " gas price req failed"
+                )
+            )
+        );
         _;
     }
 

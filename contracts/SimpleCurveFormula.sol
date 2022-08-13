@@ -20,7 +20,7 @@ contract SimpleCurveFormula is ISimpleCurveFormula, Utils {
       ((x + _supply) / 2) * (x - _supply) = _value
       x^2 = supply^2 + (2 * value)
 
-      @param _supply current token supply
+      @param _supply current erc20 token supply
       @param _value value sent buy sender
 
       @return tokens that can be purchased
@@ -45,7 +45,7 @@ contract SimpleCurveFormula is ISimpleCurveFormula, Utils {
       Formula:
       ((supply + (supply - amount)) / 2) * x = cost
 
-      @param _supply current token supply
+      @param _supply current erc20 token supply
       @param _amount token amount to sell
 
       @return wei amount of wei received for selling tokens
@@ -69,7 +69,7 @@ contract SimpleCurveFormula is ISimpleCurveFormula, Utils {
       Midpoint Formula:
       ((x + supply) + supply) / 2) * x = cost
 
-      @param _supply the current supply
+      @param _supply the current erc20 supply
       @param _amount the amount of new tokens to mint
 
       @return cost amount wei needed to send to get the amount
@@ -95,8 +95,8 @@ contract SimpleCurveFormula is ISimpleCurveFormula, Utils {
       ((_supply + x) / 2) * (_supply - x) = _value
       x^2 = supply^2 - (2 * value)
 
-      @param _supply current token supply
-      @param _value value sent buy sender
+      @param _supply current erc20 token supply
+      @param _value wei value sent buy sender
 
       @return tokens that can be purchased
      */

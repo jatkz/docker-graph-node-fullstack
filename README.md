@@ -3,28 +3,37 @@
 ```
 npx hardhat node --hostname 0.0.0.0
 
+# Deploy the smart contract
+npx hardhat run --network localhost ./scripts/deploy-bc.ts
+
+npx hardhat sample-trades --network localhost
+
 # Inside the graph node project EX:
-# create graph node directory example project template
+# create graph node directory example project template *(Starting Out)
 graph init --from-example jaredtokuz/bondingcurve ./subgraph
 cd subgraph
 # run local graph node
 docker-compose up
 
-# Deploy the smart contract
-npx hardhat run --network localhost ./scripts/deploy-bc.ts
+
 # install subgraph deps
 graph codegen
+graph build
 
 # Fix the docker compose image versions
 # graph-node and ipfs based on graph-node github docker directory
 
+# incase you make a mistake
+graph remove jaredtokuz/bondingcurve -g http://0.0.0.0:8020
+
+graph create jaredtokuz/bondingcurve --node http://0.0.0.0:8020
+graph deploy jaredtokuz/bondingcurve --ipfs http://127.0.0.1:5001 --node http://0.0.0.0:8020
 ```
 
 # TODO
 
-1. Test new logic in remix ide
-2. Write Tests for all 4 curve formula functions & the 2 simple bonding curve
-3. Write the sample-trade function to make a bunch of trade 20 buys 14 sells
+1. Resetup the new graph schema with the new smart contract
+1. Get graph node to start up and deploy the graph schema
 
 # Advanced Sample Hardhat Project
 

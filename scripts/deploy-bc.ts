@@ -7,12 +7,12 @@ import { writeFileSync } from "fs";
 import { ethers } from "hardhat";
 
 async function main() {
-  const BCUniversal = await ethers.getContractFactory("BondingCurveUniversal");
+  const BC = await ethers.getContractFactory("SimpleBondingCurve");
 
   // Start deployment, returning a promise that resolves to a contract object
-  const bcUniversal = await BCUniversal.deploy();
-  await bcUniversal.deployed();
-  console.log("Contract deployed to address:", bcUniversal.address);
+  const bondingCurve = await BC.deploy();
+  await bondingCurve.deployed();
+  console.log("Contract deployed to address:", bondingCurve.address);
 
   const network = await ethers.provider.getNetwork();
 
@@ -20,8 +20,9 @@ async function main() {
     `./bc-config.${network.name == "unknown" ? "local" : network.name}.${
       network.chainId
     }.ts`,
-    `export const contractAddress = "${bcUniversal.address}";
-export const ownerAddress = "${await bcUniversal.signer.getAddress()}";`
+    `export const contractAddress = "${bondingCurve.address}";
+export const ownerAddress = "${await bondingCurve.signer.getAddress()}";
+`
   );
 }
 
