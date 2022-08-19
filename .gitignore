@@ -7,4 +7,4 @@ typechain
 #Hardhat files
 cache
 artifacts
-subgraph/data
+subgraph/data/
