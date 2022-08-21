@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
@@ -60,7 +61,7 @@ contract SimpleBondingCurve is ERC20, SimpleCurveFormula, Ownable {
         uint256 change = msg.value - cost;
         // send back any change
         payable(msg.sender).transfer(change);
-        emit LogMint(tokensToMint, msg.value);
+        emit LogTrade("mint", msg.value, tokensToMint);
         return true;
     }
 
@@ -79,7 +80,7 @@ contract SimpleBondingCurve is ERC20, SimpleCurveFormula, Ownable {
         poolBalance = poolBalance - ethAmount;
         payable(msg.sender).transfer(ethAmount);
         _burn(msg.sender, sellAmount);
-        emit LogWithdraw(sellAmount, ethAmount);
+        emit LogTrade("burn", ethAmount, sellAmount);
         return true;
     }
 
@@ -106,7 +107,5 @@ contract SimpleBondingCurve is ERC20, SimpleCurveFormula, Ownable {
         gasPrice = _gasPrice;
     }
 
-    event LogMint(uint256 amountMinted, uint256 totalCost);
-    event LogWithdraw(uint256 amountWithdrawn, uint256 reward);
-    event LogBondingCurve(string logString, uint256 value);
+    event LogTrade(string side, uint256 weiAmt, uint256 erc20Amt);
 }

@@ -1,10 +1,7 @@
 import { task } from "hardhat/config";
 import "@nomiclabs/hardhat-waffle";
 import { contractAddress } from "../bc-config.local.31337";
-import { ContractReceipt } from "ethers";
-
-// import * as BC from "../artifacts/contracts/SimpleBondingCurve.sol/SimpleBondingCurve.json";
-// import { SimpleBondingCurve } from "../typechain";
+import { ContractReceipt, ContractTransaction } from "ethers";
 
 interface TradeStep {
   order: "buy" | "sell";
@@ -77,13 +74,13 @@ task("sample-trades", "Run some sample trades").setAction(
             value: trade.value,
             gasPrice: 800000000,
           })
-          .then((resp) => resp.wait());
+          .then((resp: ContractTransaction) => resp.wait());
       } else {
         resp = await bc
           .sell(trade.value, {
             gasPrice: 800000000,
           })
-          .then((resp) => resp.wait());
+          .then((resp: ContractTransaction) => resp.wait());
       }
 
       console.log(resp);
