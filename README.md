@@ -1,33 +1,35 @@
 # Setting up the Project
 
 ```
+# Step 1 Run the node
 npx hardhat node --hostname 0.0.0.0
 
-# Deploy the smart contract
+# Step 2 Deploy the smart contract
 npx hardhat run --network localhost ./scripts/deploy-bc.ts
 
+# Step 3 Then run the sample trades
 npx hardhat sample-trades --network localhost
+
+# Step 4 run the graph node in the subgraph folder
+cd subgraph
+docker-compose up
+
+# Step 5 install subgraph deps
+graph codegen
+graph build
+
+# Step 6 deploy the subgraph
+graph create jaredtokuz/bondingcurve --node http://0.0.0.0:8020
+graph deploy jaredtokuz/bondingcurve --ipfs http://127.0.0.1:5001 --node http://0.0.0.0:8020
+
+# If you need to redeploy
+graph remove jaredtokuz/bondingcurve -g http://0.0.0.0:8020
+
 
 # Inside the graph node project EX:
 # create graph node directory example project template *(Starting Out)
 graph init --from-example jaredtokuz/bondingcurve ./subgraph
 cd subgraph
-# run local graph node
-docker-compose up
-
-
-# install subgraph deps
-graph codegen
-graph build
-
-# Fix the docker compose image versions
-# graph-node and ipfs based on graph-node github docker directory
-
-# incase you make a mistake
-graph remove jaredtokuz/bondingcurve -g http://0.0.0.0:8020
-
-graph create jaredtokuz/bondingcurve --node http://0.0.0.0:8020
-graph deploy jaredtokuz/bondingcurve --ipfs http://127.0.0.1:5001 --node http://0.0.0.0:8020
 ```
 
 # TODO
