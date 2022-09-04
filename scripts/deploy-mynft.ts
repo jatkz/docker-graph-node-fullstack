@@ -17,9 +17,7 @@ async function main() {
   const network = await ethers.provider.getNetwork();
 
   writeFileSync(
-    `./config.${network.name == "unknown" ? "local" : network.name}.${
-      network.chainId
-    }.ts`,
+    `./mynft-config.${network.name == "unknown" ? "local" : network.name}.${network.chainId}.ts`,
     `export const contractAddress = "${myNFT.address}"
 export const ownerAddress = "${await myNFT.signer.getAddress()}"`
   );

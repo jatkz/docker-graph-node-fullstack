@@ -17,9 +17,7 @@ async function main() {
   const network = await ethers.provider.getNetwork();
 
   writeFileSync(
-    `./bc-config.${network.name == "unknown" ? "local" : network.name}.${
-      network.chainId
-    }.ts`,
+    `./bc-config.${network.name == "unknown" ? "local" : network.name}.${network.chainId}.ts`,
     `export const contractAddress = "${bondingCurve.address}";
 export const ownerAddress = "${await bondingCurve.signer.getAddress()}";
 `

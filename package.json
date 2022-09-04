@@ -37,6 +37,7 @@
     "typescript": "^4.7.4"
   },
   "dependencies": {
+    "ethereumjs-wallet": "^1.0.2",
     "solc": "^0.8.15"
   }
 }

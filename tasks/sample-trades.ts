@@ -1,6 +1,7 @@
 import { task } from "hardhat/config";
 import "@nomiclabs/hardhat-waffle";
-import { contractAddress } from "../bc-config.local.31337";
+import { contractAddress as localAddress } from "../bc-config.local.31337";
+import { contractAddress as mumbaiAddress } from "../bc-config.mumbai.undefined";
 import { ContractReceipt, ContractTransaction } from "ethers";
 
 interface TradeStep {
@@ -52,38 +53,47 @@ const trade_steps: TradeStep[] = [
   { addressIndex: 1, order: "sell", value: 15 },
 ];
 
-task("sample-trades", "Run some sample trades").setAction(
-  async (_, hre): Promise<void> => {
-    console.log(hre.network.name);
-    if (hre.network.name != "localhost") return;
-    /* these two lines deploy the contract to the network */
-    const accounts = await hre.ethers.getSigners();
-
-    for (const trade of trade_steps) {
-      const bc = await hre.ethers.getContractAt(
-        "SimpleBondingCurve",
-        contractAddress,
-        accounts[trade.addressIndex]
-      );
-
-      let resp: ContractReceipt;
-
-      if (trade.order == "buy") {
-        resp = await bc
-          .buy({
-            value: trade.value,
-            gasPrice: 800000000,
-          })
-          .then((resp: ContractTransaction) => resp.wait());
-      } else {
-        resp = await bc
-          .sell(trade.value, {
-            gasPrice: 800000000,
-          })
-          .then((resp: ContractTransaction) => resp.wait());
-      }
-
-      console.log(resp);
-    }
+task("sample-trades", "Run some sample trades").setAction(async (_, hre): Promise<void> => {
+  console.log(hre.network.name);
+  let contractAddress: string;
+  if (hre.network.name == "mumbai") {
+    contractAddress = mumbaiAddress;
+  } else if (hre.network.name == "hardhat") {
+    contractAddress = localAddress;
+  } else {
+    return;
   }
-);
+  // if (hre.network.name != "localhost") return;
+  /* these two lines deploy the contract to the network */
+  const accounts = await hre.ethers.getSigners();
+
+  for (const trade of trade_steps) {
+    const bc = await hre.ethers.getContractAt("SimpleBondingCurve", contractAddress, accounts[trade.addressIndex]);
+    let resp: ContractReceipt;
+
+    if (trade.order == "buy") {
+      resp = await bc
+        .buy({
+          value: trade.value,
+          gasPrice: 800000000,
+        })
+        .then((resp) => {
+          console.log("resp", resp);
+          return resp;
+        })
+        .then((resp: ContractTransaction) => resp.wait());
+    } else {
+      resp = await bc
+        .sell(trade.value, {
+          gasPrice: 800000000,
+        })
+        .then((resp) => {
+          console.log("resp", resp);
+          return resp;
+        })
+        .then((resp: ContractTransaction) => resp.wait());
+    }
+
+    console.log(resp);
+  }
+});

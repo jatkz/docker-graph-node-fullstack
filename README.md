@@ -37,6 +37,10 @@ cd subgraph
 1. Resetup the new graph schema with the new smart contract
 1. Get graph node to start up and deploy the graph schema
 
+# Set up with mumbai test network
+
+1. Follow this for meta mask set up and faucet => https://blog.pods.finance/guide-connecting-mumbai-testnet-to-your-metamask-87978071aca8
+
 # Advanced Sample Hardhat Project
 
 This project demonstrates an advanced Hardhat use case, integrating other tools commonly used alongside Hardhat in the ecosystem.
